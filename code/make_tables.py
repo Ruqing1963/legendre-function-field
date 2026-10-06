@@ -1,7 +1,8 @@
-"""
+﻿"""
 Build the LaTeX tables in paper/tables/ and the summary in results/ from data/*.csv.
 """
 import json
+import math
 import os
 
 import pandas as pd
@@ -65,22 +66,101 @@ def exhaustive_table(e):
 
 
 def thresholds_table(t):
-    lines = [r"\begin{tabular}{rrrrr}", r"\toprule",
-             r"$d$ & v5 claim (unproved) & Prop.~5.4 (Katz) & Cor.~5.3 (Cafure--Matera) & Prop.~5.5 (Sawin) \\",
+    lines = [r"\begin{tabular}{rrrrrr}", r"\toprule",
+             r"$d$ & classical & v5 (unproved) & Katz + Deligne & Cafure--Matera & via Sawin \\",
              r"\midrule"]
     for _, r in t[t.d.isin([1, 2, 3, 4, 5, 6, 8, 10, 15, 20, 30, 40, 50])].iterrows():
         vals = {"katz": r.log10_katz_betti, "cm": r.log10_revised_rigorous}
         if str(r.log10_sawin) not in ("", "nan"):
             vals["sawin"] = float(r.log10_sawin)
-        best = min(vals, key=vals.get)
-        cell = {k: (rf"\textbf{{{v:.1f}}}" if (k == best and r.d > 3) else f"{v:.1f}") for k, v in vals.items()}
-        star = r"$^{\ast}$" if r.d <= 3 else ""
-        lines.append(f"{int(r.d)} & {r.log10_v5_claimed:.1f} & {cell['katz']}{star} & {cell['cm']}{star} & "
-                     f"{cell.get('sawin', '--')}{star if 'sawin' in cell else ''} \\\\")
+        cell = {k: f"{v:.1f}" for k, v in vals.items()}
+        classical = f"\\textbf{{{math.log10(r.d - 2):.2f}}}" if r.d >= 3 else r"\textbf{--}"
+        lines.append(f"{int(r.d)} & {classical} & {r.log10_v5_claimed:.1f} & {cell['katz']} & {cell['cm']} & "
+                     f"{cell.get('sawin', '--')} \\\\")
     lines += [r"\bottomrule",
-              r"\multicolumn{5}{l}{\footnotesize $^{\ast}$\,not needed: Theorem~D gives $N_{\rm irr}\ge1$ for all admissible $q$.}",
+              r"\multicolumn{6}{l}{\footnotesize Classical: $N_{\rm irr}\ge1$ for $q>d-2$ (Theorem~1); for $d\le2$ for every $q$.}",
               r"\end{tabular}"]
     return "\n".join(lines)
+
+
+def open_table(s):
+    lines = [r"\begin{tabular}{rrrrrrrr}", r"\toprule",
+             r"$q$ & $d$ & intervals & orbits & $\min N_{\rm irr}$ & ratio & $\mathrm{Var}\,\Psi/q^{d+1}$ & $d-2$ \\",
+             r"\midrule"]
+    last = None
+    for _, r in s.sort_values(["q", "d"]).iterrows():
+        if r.q > r.d - 2 and r.q != 2:
+            continue  # covered by Theorem 1 (keep q = 2 rows for completeness)
+        if last is not None and r.q != last:
+            lines.append(r"\addlinespace")
+        last = r.q
+        mark = r"$^\dagger$" if r["mode"] != "all" else ""
+        var = f"{r['var_Lambda_over_q^(d+1)']:.2f}" if r["mode"] == "all" else "--"
+        lines.append(f"{int(r.q)} & {int(r.d)}{mark} & {int(r.intervals_total)} & {int(r.orbits_examined)} & "
+                     f"{int(r.min_N_irr)} & {r.min_ratio:.3f} & {var} & {int(r.d) - 2 if r.d >= 4 else '--'} \\\\")
+    lines += [r"\bottomrule", r"\end{tabular}"]
+    return "\n".join(lines)
+
+
+def prime_powers(upto):
+    out = []
+    for n in range(2, upto + 1):
+        p = next(k for k in range(2, n + 1) if n % k == 0)
+        m = n
+        while m % p == 0:
+            m //= p
+        if m == 1:
+            out.append(n)
+    return out
+
+
+def verified_macros(s):
+    full = s[s["mode"] == "all"]
+    ok = {(int(r.q), int(r.d)) for _, r in full.iterrows() if r.min_N_irr >= 1}
+
+    def maxd(q):
+        """largest D such that every d with q <= d - 2 <= D - 2 is fully computed (contiguous)."""
+        d = q + 1  # d <= q + 1 is covered by Theorem 1
+        while (q, d + 1) in ok:
+            d += 1
+        return d
+
+    ver = {q: maxd(q) for q in (2, 3, 4, 5)}
+    # all-q bound: largest D such that every (q, d) with d <= D and q <= d - 2 is fully computed
+    D = 2
+    while True:
+        dn = D + 1
+        need = [q for q in prime_powers(max(dn - 2, 1)) if q <= dn - 2]
+        if all((q, dn) in ok for q in need):
+            D = dn
+        else:
+            break
+        if D > 60:
+            break
+    open_rows = full[(full.q <= full.d - 2)]
+    worst = open_rows.loc[open_rows.min_ratio.idxmin()]
+    # heuristic maximum deficit over q >= 2, 3 <= d <= 200
+    best = (0, None)
+    for q in prime_powers(64):
+        for d in range(3, 200):
+            v = math.sqrt(2 * (d - 1) * (d - 2) * math.log(q) * math.exp(-(d + 1) * math.log(q)))
+            if v > best[0]:
+                best = (v, (q, d))
+    lines = [
+        f"\\newcommand{{\\VerTwo}}{{{ver[2]}}}",
+        f"\\newcommand{{\\VerThree}}{{{ver[3]}}}",
+        f"\\newcommand{{\\VerFour}}{{{ver[4]}}}",
+        f"\\newcommand{{\\VerFive}}{{{ver[5]}}}",
+        f"\\newcommand{{\\AllQd}}{{{D}}}",
+        f"\\newcommand{{\\AllQdNext}}{{{D + 1}}}",
+        f"\\newcommand{{\\MinRatioOpen}}{{{worst.min_ratio:.3f}}}",
+        f"\\newcommand{{\\MinRatioCase}}{{({int(worst.q)},{int(worst.d)})}}",
+        f"\\newcommand{{\\MaxDeficit}}{{{best[0]:.2f}}}",
+        f"\\newcommand{{\\MaxDeficitCase}}{{({best[1][0]},{best[1][1]})}}",
+    ]
+    return "\n".join(lines) + "\n", {"ver": ver, "all_q_d": D, "min_ratio_open": float(worst.min_ratio),
+                                      "min_ratio_case": [int(worst.q), int(worst.d)],
+                                      "max_deficit": best[0], "max_deficit_case": list(best[1])}
 
 
 def main():
@@ -97,6 +177,14 @@ def main():
         fh.write(exhaustive_table(e))
     with open(os.path.join(TAB, "thresholds.tex"), "w") as fh:
         fh.write(thresholds_table(t))
+    from open_data import load_summary
+    open_summary = load_summary()
+    if open_summary is not None:
+        with open(os.path.join(TAB, "open_regime.tex"), "w") as fh:
+            fh.write(open_table(open_summary))
+        macros, open_info = verified_macros(open_summary)
+        with open(os.path.join(TAB, "verified.tex"), "w") as fh:
+            fh.write(macros)
 
     cf = c[c.closed_form.notna() & (c.closed_form.astype(str) != "")]
     ft = ft.assign(absdiff=(ft.frequency - ft.S_2d_probability).abs())
@@ -124,12 +212,37 @@ def main():
         },
         "factorization_types_total_variation_distance": {f"d={d},p={p}": round(float(v), 5) for (d, p), v in tv.items()},
     }
+    # classical Hayes-Weil bounds (Theorem 1) on the q > d rows
+    cq = c.assign(lo=(c.p ** (c.d + 1) - c.d * c.p ** c.d) / (2 * c.d),
+                  hi=(c.p ** (c.d + 1) + (c.d - 2).clip(lower=0) * c.p ** c.d) / (2 * c.d))
+    m = cq.p > cq.d
+    summary["classical_bound_check"] = {
+        "rows_q_gt_d": int(m.sum()),
+        "all_within_bounds": bool(((cq.N_irr >= cq.lo) & (cq.N_irr <= cq.hi))[m].all()),
+    }
+    if open_summary is not None:
+        summary["open_range"] = open_info
     with open(os.path.join(RES, "summary.json"), "w") as fh:
         json.dump(summary, fh, indent=2)
 
     md = ["# Results summary", "",
-          "Generated by `code/make_tables.py` from the CSV files in `data/`.", "",
-          "## Exact counts (`data/interval_counts.csv`)", "",
+          "Generated by `code/make_tables.py` from the CSV files in `data/`.", ""]
+    if open_summary is not None:
+        md += ["## Open range q <= d - 2 (`data/open_regime_summary.csv`)", "",
+               f"* Every Legendre interval contains an irreducible polynomial for q = 2, d <= {open_info['ver'][2]}; "
+               f"q = 3, d <= {open_info['ver'][3]}; q = 4, d <= {open_info['ver'][4]}; q = 5, d <= {open_info['ver'][5]}.",
+               f"* With Theorem 1 (q >= d - 1), the analogue of Legendre's conjecture holds for **every q when d <= {open_info['all_q_d']}**.",
+               f"* Smallest normalized count 2d N_irr / q^(d+1) in the open range: {open_info['min_ratio_open']:.3f} at (q, d) = {tuple(open_info['min_ratio_case'])}.",
+               "", "| q | d | mode | intervals | orbits | min N_irr | min ratio | Var(Psi)/q^(d+1) | KR limit d-2 |",
+               "|---|---|---|---|---|---|---|---|---|"]
+        for _, r in open_summary.sort_values(["q", "d"]).iterrows():
+            md.append(f"| {r.q} | {r.d} | {r['mode']} | {r.intervals_total} | {r.orbits_examined} | {r.min_N_irr} | "
+                      f"{r.min_ratio:.4f} | {r['var_Lambda_over_q^(d+1)']:.3f} | {r.d - 2} |")
+        md += [""]
+    md += ["## Classical range check", "",
+           f"* {summary['classical_bound_check']['rows_q_gt_d']} exact counts with q > d; all within the Hayes-Weil bounds of Theorem 1: "
+           f"**{summary['classical_bound_check']['all_within_bounds']}**.", "",
+           "## Exact counts (`data/interval_counts.csv`)", "",
           f"* {summary['interval_counts']['rows']} triples (d, q, f) with d = {summary['interval_counts']['d_range'][0]}..{summary['interval_counts']['d_range'][1]}.",
           f"* Smallest N_irr observed: **{summary['interval_counts']['min_N_irr']}** (never zero).",
           f"* Theorem D closed forms checked on {summary['interval_counts']['closed_form_checked']} rows, mismatches: **{summary['interval_counts']['closed_form_mismatches']}**.",
@@ -149,11 +262,13 @@ def main():
     for k, v in summary["factorization_types_total_variation_distance"].items():
         md.append(f"| {k} | {v} |")
     md += ["", "## Thresholds (`data/thresholds.csv`)", "",
-           "log10 of the threshold q_0(d) beyond which N_irr >= 1. For d <= 3 no threshold is needed (Theorem D).", "",
-           "| d | v5 claim (unproved) | Katz + Deligne | Cafure-Matera | Sawin 2021 |", "|---|---|---|---|---|"]
+           "log10 of the threshold q_0(d) beyond which N_irr >= 1 is proved. The classical Hayes-Weil bound "
+           "(Theorem 1 of v7) gives q_0 = d - 2 and supersedes the other columns, which are kept from v6.", "",
+           "| d | classical (v7) | v5 claim (unproved) | Katz + Deligne | Cafure-Matera | Sawin 2021 |", "|---|---|---|---|---|---|"]
     for _, r in t[t.d <= 12].iterrows():
         sw = "" if str(r.log10_sawin) in ("", "nan") else r.log10_sawin
-        md.append(f"| {r.d} | {r.log10_v5_claimed} | {r.log10_katz_betti} | {r.log10_revised_rigorous} | {sw} |")
+        cl = f"{math.log10(r.d - 2):.3f}" if r.d >= 3 else "-"
+        md.append(f"| {r.d} | {cl} | {r.log10_v5_claimed} | {r.log10_katz_betti} | {r.log10_revised_rigorous} | {sw} |")
     with open(os.path.join(RES, "summary.md"), "w", encoding="utf-8") as fh:
         fh.write("\n".join(md) + "\n")
     print(json.dumps(summary, indent=2))

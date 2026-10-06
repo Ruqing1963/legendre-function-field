@@ -34,5 +34,28 @@
     "d=4,p=19": 0.02432,
     "d=5,p=13": 0.03557,
     "d=6,p=13": 0.03553
+  },
+  "classical_bound_check": {
+    "rows_q_gt_d": 174,
+    "all_within_bounds": true
+  },
+  "open_range": {
+    "ver": {
+      "2": 20,
+      "3": 10,
+      "4": 10,
+      "5": 8
+    },
+    "all_q_d": 8,
+    "min_ratio_open": 0.375,
+    "min_ratio_case": [
+      2,
+      6
+    ],
+    "max_deficit": 0.5098334950844046,
+    "max_deficit_case": [
+      2,
+      5
+    ]
   }
 }

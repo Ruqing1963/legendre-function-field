@@ -1,7 +1,7 @@
 ﻿cff-version: 1.2.0
 message: "If you use this work, please cite it as below."
-title: "Legendre's Conjecture in Function Fields: Full Monodromy, Twisted Root Varieties, and Explicit Bounds"
-version: "v6"
+title: "Legendre's Conjecture in Function Fields: the Classical Range, Full Monodromy, and the Open Range q <= d-2"
+version: "v7"
 date-released: 2026-10-06
 authors:
   - family-names: Chen
@@ -9,15 +9,13 @@ authors:
     affiliation: "GUT Geoservice Inc., Montréal, Canada"
 license: CC-BY-4.0
 repository-code: "https://github.com/Ruqing1963/legendre-function-field"
-doi: 10.5281/zenodo.23179113
-url: "https://doi.org/10.5281/zenodo.23179113"
 identifiers:
   - type: doi
     value: 10.5281/zenodo.23179113
-    description: "Zenodo record of version v6 (this version)"
+    description: "Zenodo record of version v6 (previous version)"
   - type: doi
     value: 10.5281/zenodo.18705744
-    description: "Zenodo record of version v5 (the version reviewed and revised here)"
+    description: "Zenodo record of version v5 (original version)"
 keywords:
   - Legendre conjecture
   - function fields
@@ -26,3 +24,6 @@ keywords:
   - monodromy
   - Chebotarev density
   - Lang-Weil
+  - Hayes characters
+  - Keating-Rudnick variance
+  - prescribed coefficients

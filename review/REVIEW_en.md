@@ -60,3 +60,11 @@ All numerical claims in v5 were reproduced by brute force (`code/test_fflib.py`)
 - **Comparison with Sawin (2021).** The first draft of v6 did not cite Sawin, [Duke Math. J. 170 (2021)](https://arxiv.org/abs/1809.05137); the current version does. Sawin's Corollary 4.7 gives near square-root cancellation in short intervals with an explicit constant. Proposition 5.5 of v6 derives from it |2d·N_irr − q^{d+1}| ≤ 6(2d+2)^{3d−1} q^{d/2+1} + dq + d² for p > 2d. That threshold is about (2d+2)^6. It beats Theorem C for every d ≥ 5, so Theorem C is only the best available bound for d = 4. Sawin's variety of ordered roots is the root variety V, so Theorem B is a twisted form of his point count rather than a new idea.
 - **Theorem D.** Closed formulas for d ≤ 3, with N_irr ≥ 1 for every admissible q. For d=3 the formula is a special case of Kuz'min's two-coefficient formula.
 - **Computations.** 186 exact counts for d ≤ 6, all of I_f factored. There are 0 mismatches with Theorem D. The twisted identity was verified by enumerating F_{q^{2d}}, and an exhaustive search over all f was run for small q. No interval without an irreducible was found.
+
+## 6. Addendum: issues found later in v6 (fixed in v7)
+
+- **The classical estimate was missed.** Hayes characters and Weil's theorem give |Σ_{P∈I_f} Λ(P) − q^{d+1}| ≤ (d−2)(q^d − q) in every characteristic. This is explicit in Hsu (1996), Cohen (2005, Thm 2.1) and Gao (2021, Cors. 1–2). With a bound on prime powers it gives N_irr ≥ 1 for all q ≥ d − 1. It supersedes every threshold in v5 and v6, including Theorem C (q > 1.65·10⁴ for d = 4) and the bound via Sawin (about (2d+2)^6).
+- **The level-1/2 discussion was off by a factor of q.** At level 1/2 the Riemann hypothesis loses a factor d/q, not d. The open range is therefore q ≤ d − 2, not "fixed q" in general.
+- **Novelty of Theorem B.** The root variety is Sawin's X_{n,m,c}, so the twisted identity is a variant of his point count.
+
+v7 is restructured around the classical range (Theorem 1) and new computations in the open range q ≤ d − 2 (Theorem 2 and a conjecture).

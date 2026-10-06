@@ -12,6 +12,7 @@ import matplotlib
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
+import matplotlib.ticker  # noqa: E402
 import numpy as np  # noqa: E402
 import pandas as pd  # noqa: E402
 
@@ -131,6 +132,8 @@ def fig4(th):
     ax.plot(th.d, th.log10_revised_rigorous, "-", color=SERIES[0], lw=2, label="Cafure-Matera (Cor. 5.3)")
     sw = th[th.d >= 2]
     ax.plot(sw.d, pd.to_numeric(sw.log10_sawin), "-", color=SERIES[6], lw=2, label="via Sawin 2021 (Prop. 5.5)")
+    cl = th[th.d >= 3]
+    ax.plot(cl.d, np.log10(cl.d - 2), "-", color=INK, lw=2.5, label="classical Hayes-Weil, q > d-2 (v7 Thm 1)")
     ax.axvspan(0.5, 3.5, color=GRID, alpha=0.6, lw=0)
     ax.text(2, ax.get_ylim()[1] * 0.45, "exact\n(Thm D)", ha="center", va="top", fontsize=8, color=INK2)
     ax.set_xlabel("d")
@@ -138,6 +141,56 @@ def fig4(th):
     ax.set_title("Thresholds beyond which every Legendre interval contains an irreducible", loc="left")
     ax.legend(fontsize=8, loc="upper left", bbox_to_anchor=(0.13, 1.0))
     save(fig, "fig4_thresholds")
+
+
+def fig5(s):
+    full = s[s["mode"] == "all"].sort_values(["q", "d"])
+    fig, ax = plt.subplots(figsize=(6.4, 3.8))
+    for i, q in enumerate(sorted(full.q.unique())):
+        sub = full[full.q == q]
+        ax.plot(sub.d, sub.min_ratio, "-o", color=SERIES[i], lw=2, ms=5, label=f"q = {q}")
+        if q % 2 == 1:
+            dd = np.arange(max(3, sub.d.min()), sub.d.max() + 1)
+            pred = 1 - np.sqrt(2 * (dd - 1) * (dd - 2) * np.log(q) / q ** (dd + 1.0))
+            ax.plot(dd, pred, "--", color=SERIES[i], lw=1.2, alpha=0.8)
+    ax.axhline(1, color=AXIS, lw=1)
+    ax.axhline(0, color=AXIS, lw=1)
+    ax.set_ylim(0, 1.05)
+    ax.xaxis.set_major_locator(matplotlib.ticker.MaxNLocator(integer=True))
+    ax.set_xlabel("d")
+    ax.set_ylabel(r"$\min_f\ 2d\,N_{\rm irr}(f)/q^{d+1}$")
+    ax.set_title("Smallest normalized count over all Legendre intervals (dashed: Gaussian model)", loc="left")
+    ax.legend(fontsize=8, loc="lower right", ncol=2)
+    save(fig, "fig5_open_min_ratio")
+
+
+def fig6(s, orb):
+    full = s[s["mode"] == "all"].sort_values(["q", "d"])
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(8.8, 3.6))
+    odd = full[(full.q % 2 == 1) & (full.d >= 4)]
+    for i, q in enumerate(sorted(odd.q.unique())):
+        sub = odd[odd.q == q]
+        ax1.plot(sub.d, sub["var_Lambda_over_q^(d+1)"], "-o", color=SERIES[[1, 3][i % 2]], lw=2, ms=5, label=f"q = {q}")
+    dd = np.arange(4, odd.d.max() + 1)
+    ax1.plot(dd, dd - 2, "--", color=INK2, lw=1.5, label="Keating-Rudnick: d - 2")
+    ax1.set_xlabel("d")
+    ax1.set_ylabel(r"Var$_f\,\Psi(f)\,/\,q^{d+1}$")
+    ax1.set_title("Variance across intervals (odd q)", loc="left")
+    ax1.legend(fontsize=8, loc="upper left")
+    # Z histogram for the largest fully computed odd case
+    cand = odd.assign(size=odd.q ** (odd.d + 1) * odd.orbits_examined).sort_values("size")
+    q, d = int(cand.iloc[-1].q), int(cand.iloc[-1].d)
+    o = orb[(orb.q == q) & (orb.d == d)]
+    z = (o.Lambda_sum - q ** (d + 1)) / np.sqrt((d - 2) * q ** (d + 1))
+    ax2.hist(z, bins=30, weights=o.orbit_size, density=True, color=SERIES[0], edgecolor=SURFACE, linewidth=1)
+    xs = np.linspace(-4, 4, 200)
+    ax2.plot(xs, np.exp(-xs ** 2 / 2) / np.sqrt(2 * np.pi), color=INK2, lw=1.5, label="N(0, 1)")
+    ax2.set_xlabel(r"$Z=(\Psi(f)-q^{d+1})/\sqrt{(d-2)\,q^{d+1}}$")
+    ax2.set_ylabel("density")
+    ax2.set_title(f"Distribution of Z, q = {q}, d = {d}", loc="left")
+    ax2.legend(fontsize=8)
+    fig.tight_layout()
+    save(fig, "fig6_variance_kr")
 
 
 def main():
@@ -148,6 +201,12 @@ def main():
     fig2(counts)
     fig3(ft)
     fig4(th)
+    from open_data import load_orbits, load_summary
+    s = load_summary()
+    if s is not None:
+        orb = load_orbits()
+        fig5(s)
+        fig6(s, orb)
     print("figures written to", FIG)
 
 

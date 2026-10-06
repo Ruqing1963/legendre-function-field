@@ -9,7 +9,12 @@ authors:
     affiliation: "GUT Geoservice Inc., Montréal, Canada"
 license: CC-BY-4.0
 repository-code: "https://github.com/Ruqing1963/legendre-function-field"
+doi: 10.5281/zenodo.23185896
+url: "https://doi.org/10.5281/zenodo.23185896"
 identifiers:
+  - type: doi
+    value: 10.5281/zenodo.23185896
+    description: "Zenodo record of version v7 (this version)"
   - type: doi
     value: 10.5281/zenodo.23179113
     description: "Zenodo record of version v6 (previous version)"

@@ -1,8 +1,9 @@
 ﻿# Legendre's Conjecture in Function Fields
 
-**The classical range, full monodromy, and the open range q ≤ d − 2.** This repository holds version v7 of the preprint *The Geometry of Prime Vacuums*. Earlier versions are v6, [10.5281/zenodo.23179113](https://doi.org/10.5281/zenodo.23179113), and v5, [10.5281/zenodo.18705744](https://doi.org/10.5281/zenodo.18705744).
+**The classical range, full monodromy, and the open range q ≤ d − 2.** This repository holds version v7 of the preprint *The Geometry of Prime Vacuums*, published on Zenodo as [10.5281/zenodo.23185896](https://doi.org/10.5281/zenodo.23185896). Earlier versions are v6, [10.5281/zenodo.23179113](https://doi.org/10.5281/zenodo.23179113), and v5, [10.5281/zenodo.18705744](https://doi.org/10.5281/zenodo.18705744).
 
-[![DOI v6](https://img.shields.io/badge/DOI%20v6-10.5281%2Fzenodo.23179113-blue)](https://doi.org/10.5281/zenodo.23179113)
+[![DOI v7](https://img.shields.io/badge/DOI%20v7-10.5281%2Fzenodo.23185896-blue)](https://doi.org/10.5281/zenodo.23185896)
+[![DOI v6](https://img.shields.io/badge/DOI%20v6-10.5281%2Fzenodo.23179113-lightblue)](https://doi.org/10.5281/zenodo.23179113)
 [![DOI v5](https://img.shields.io/badge/DOI%20v5-10.5281%2Fzenodo.18705744-lightblue)](https://doi.org/10.5281/zenodo.18705744)
 [![Paper: CC BY 4.0](https://img.shields.io/badge/paper-CC_BY_4.0-lightgrey.svg)](https://creativecommons.org/licenses/by/4.0/)
 [![Code: MIT](https://img.shields.io/badge/code-MIT-green.svg)](LICENSE)
@@ -83,6 +84,7 @@ Every element of every Legendre interval in the open range is tested with Ben-Or
 ```bibtex
 @misc{chen2026legendreff,
   author = {Ruqing Chen},
+  doi    = {10.5281/zenodo.23185896},
   title  = {Legendre's Conjecture in Function Fields: the Classical Range,
             Full Monodromy, and the Open Range $q\le d-2$},
   year   = {2026},

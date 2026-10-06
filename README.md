@@ -1,8 +1,9 @@
-# Legendre's Conjecture in Function Fields
+﻿# Legendre's Conjecture in Function Fields
 
-**Full monodromy, twisted root varieties, and explicit bounds.** This is the revised version (v6) of the Zenodo preprint [10.5281/zenodo.18705744](https://doi.org/10.5281/zenodo.18705744) (v5, February 2026).
+**Full monodromy, twisted root varieties, and explicit bounds.** This repository holds version v6 of the preprint, published on Zenodo as [10.5281/zenodo.23179113](https://doi.org/10.5281/zenodo.23179113). It revises v5, [10.5281/zenodo.18705744](https://doi.org/10.5281/zenodo.18705744), from February 2026.
 
-[![DOI v5](https://img.shields.io/badge/Zenodo%20v5-10.5281%2Fzenodo.18705744-blue)](https://doi.org/10.5281/zenodo.18705744)
+[![DOI v6](https://img.shields.io/badge/DOI%20v6-10.5281%2Fzenodo.23179113-blue)](https://doi.org/10.5281/zenodo.23179113)
+[![DOI v5](https://img.shields.io/badge/DOI%20v5-10.5281%2Fzenodo.18705744-lightblue)](https://doi.org/10.5281/zenodo.18705744)
 [![Paper: CC BY 4.0](https://img.shields.io/badge/paper-CC_BY_4.0-lightgrey.svg)](https://creativecommons.org/licenses/by/4.0/)
 [![Code: MIT](https://img.shields.io/badge/code-MIT-green.svg)](LICENSE)
 
@@ -98,10 +99,11 @@ The full tables are in [`results/summary.md`](results/summary.md).
 ```bibtex
 @misc{chen2026legendreff,
   author = {Ruqing Chen},
+  doi    = {10.5281/zenodo.23179113},
   title  = {Legendre's Conjecture in Function Fields: Full Monodromy,
             Twisted Root Varieties, and Explicit Bounds},
   year   = {2026},
-  note   = {Revised version (v6) of Zenodo record 10.5281/zenodo.18705744},
+  note   = {Version v6; revises v5, doi:10.5281/zenodo.18705744},
   url    = {https://github.com/Ruqing1963/legendre-function-field}
 }
 ```

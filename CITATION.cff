@@ -1,4 +1,4 @@
-cff-version: 1.2.0
+﻿cff-version: 1.2.0
 message: "If you use this work, please cite it as below."
 title: "Legendre's Conjecture in Function Fields: Full Monodromy, Twisted Root Varieties, and Explicit Bounds"
 version: "v6"
@@ -9,7 +9,12 @@ authors:
     affiliation: "GUT Geoservice Inc., Montréal, Canada"
 license: CC-BY-4.0
 repository-code: "https://github.com/Ruqing1963/legendre-function-field"
+doi: 10.5281/zenodo.23179113
+url: "https://doi.org/10.5281/zenodo.23179113"
 identifiers:
+  - type: doi
+    value: 10.5281/zenodo.23179113
+    description: "Zenodo record of version v6 (this version)"
   - type: doi
     value: 10.5281/zenodo.18705744
     description: "Zenodo record of version v5 (the version reviewed and revised here)"

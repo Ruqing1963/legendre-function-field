@@ -1,0 +1,966 @@
+% ═══════════════════════════════════════════════════════════════════════
+% The Geometry of Prime Vacuums: 
+% Legendre's Conjecture in Function Fields via Monodromy and Chebotarev Density
+% Titan Project — February 2026
+% ═══════════════════════════════════════════════════════════════════════
+
+\documentclass[11pt, a4paper]{article}
+
+% ── Packages ──
+\usepackage[top=28mm, bottom=28mm, left=25mm, right=25mm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath, amssymb, amsthm, mathtools}
+\usepackage{mathrsfs}
+\usepackage{graphicx}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{enumitem}
+\usepackage{hyperref}
+
+% ── Theorem Environments ──
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+% ── Macros ──
+\newcommand{\Fq}{\mathbb{F}_q}
+\newcommand{\Fqbar}{\overline{\mathbb{F}}_q}
+\newcommand{\Proj}{\mathbb{P}^1}
+\newcommand{\Affine}{\mathbb{A}}
+\newcommand{\Gal}{\mathrm{Gal}}
+\newcommand{\Frob}{\mathrm{Frob}}
+\newcommand{\Sw}{\mathrm{Sw}}
+\newcommand{\drop}{\mathrm{drop}}
+\newcommand{\disc}{\mathrm{disc}}
+
+\title{\textbf{The Geometry of Prime Vacuums: \\
+Legendre's Conjecture in Function Fields \\
+via Monodromy and Chebotarev Density}}
+\author{Ruqing Chen\\[4pt]
+\small GUT Geoservice Inc., Montr\'eal, Canada\\[2pt]
+\small \texttt{ruqing@hotmail.com}}
+\date{February 2026}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+We prove the function field analogue of Legendre's Conjecture.
+Let $f(t) \in \Fq[t]$ be a squarefree monic polynomial of degree
+$d \ge 1$ with $\mathrm{char}(\Fq) > 2d$.
+We show that for $q > (8d)^{2d+6}$,
+the short interval
+$\mathcal{I}_f = \{f(t)^2 + s(t) : \deg s \le d\}$
+contains at least one irreducible polynomial over $\Fq$;
+in fact, the number of such irreducibles is asymptotically
+$q^{d+1}/(2d)$.
+The proof constructs the universal polynomial family over the
+parameter space $\Affine^{d+1}$, establishes that its geometric
+monodromy group is the full symmetric group $S_{2d}$
+(via irreducibility, primitivity, and simple branching), and
+then applies the effective Chebotarev density theorem for
+higher-dimensional varieties.
+The topological error term is controlled by Katz's Betti
+number bounds.
+\end{abstract}
+
+\bigskip
+
+% ═══════════════════════════════════════════════════════════════════════
+\section{Introduction}\label{sec:intro}
+% ═══════════════════════════════════════════════════════════════════════
+
+\subsection{Background}
+The classical Legendre Conjecture posits that for every integer
+$n \ge 1$, there exists at least one prime in the interval
+$[n^2,(n+1)^2]$.
+This remains open over $\mathbb{Z}$; the best unconditional result
+(Baker--Harman--Pintz \cite{BHP2001}) yields primes in
+$[x, x + x^{0.525}]$, which falls short of the
+$\mathcal{O}(x^{0.5})$ length of the Legendre interval.
+
+Over the polynomial ring $\Fq[t]$, the geometry of algebraic
+varieties over finite fields provides the additional structure
+needed to resolve the problem.
+Our method follows the paradigm introduced by
+Bary-Soroker \cite{barysoroker2012}, who proved the function field
+analogue of Dirichlet's theorem on primes in arithmetic progressions
+using the monodromy of polynomial families and the Chebotarev density
+theorem.
+We adapt and extend this framework to the substantially different
+setting of \emph{short intervals}, where the shift $s(t)$ perturbs
+only the lower-order coefficients of $f(t)^2$, introducing rigidity
+constraints that require a more delicate analysis of primitivity
+and branching.
+
+\subsection{Context within the Titan Project}
+
+This paper is part of a broader programme investigating the
+geometric and cohomological obstructions to classical prime
+number conjectures.
+In \cite{ChenConductor}, we studied conductor rigidity phenomena
+for Frey curves associated to prime gaps,
+establishing that the Wiles paradigm encounters fundamental
+obstructions in the additive setting;
+this work provided the original motivation for seeking
+alternative geometric approaches to Legendre-type problems.
+In \cite{ChenLandau}, we investigated Landau's fourth problem
+($n^2 + 1$ primes) via conductor rigidity and Sato--Tate
+equidistribution for quadratic polynomial families---a setting
+closely analogous to the present one, where the quadratic
+structure $f(t)^2 + s(t)$ plays a similar role.
+In \cite{ChenAP}, we examined primes in arithmetic progressions
+through the lens of conductor rigidity,
+encountering the Bombieri--Vinogradov barrier;
+the monodromy and Chebotarev density framework employed in the
+present paper may be viewed as a function field resolution of
+the equidistribution difficulties identified there.
+
+The present work differs from the preceding papers in a fundamental
+way: rather than analyzing conductor invariants of fixed
+$L$-functions, we construct a \emph{universal polynomial family}
+and exploit the full symmetric monodromy of the associated covering
+space.
+This shift from local rigidity to global equidistribution is what
+enables a complete resolution in the function field setting.
+
+\subsection{Setup and main result}
+
+\begin{definition}[Legendre Short Interval]\label{def:interval}
+Let $f(t) \in \Fq[t]$ be monic of degree $d \ge 1$.
+The \emph{Legendre short interval} is
+\[
+    \mathcal{I}_f
+    \;=\;
+    \Bigl\{\,
+    P_\mathbf{a}(t) = f(t)^2 + \sum_{i=0}^d a_i\, t^i
+    \;\Bigm|\; a_i \in \Fq
+    \,\Bigr\}.
+\]
+The parameter space is $\mathcal{M} = \Affine^{d+1}_{\Fq}$
+with coordinates $\mathbf{a}=(a_0,\dots,a_d)$.
+Every $P_\mathbf{a}$ is monic of degree $2d$, and
+$|\mathcal{I}_f| = q^{d+1}$.
+\end{definition}
+
+\begin{theorem}[Main Theorem]\label{thm:main}
+Let $f(t) \in \Fq[t]$ be a squarefree monic polynomial of degree
+$d \ge 1$, and suppose $\mathrm{char}(\Fq) > 2d$.
+Then the number of irreducible polynomials in $\mathcal{I}_f$
+satisfies
+\begin{equation}\label{eq:main_asymptotic}
+    N_{\mathrm{irr}}
+    \;=\;
+    \frac{q^{d+1}}{2d}
+    \;+\;
+    O_d\!\left(q^{d+\frac{1}{2}}\right).
+\end{equation}
+In particular, $N_{\mathrm{irr}} \ge 1$ whenever
+$q > (8d)^{2d+6}$.
+\end{theorem}
+
+\begin{remark}[On the squarefree hypothesis]\label{rem:sqfree}
+The assumption that $f$ is squarefree is used in
+Proposition~\ref{prop:transposition}
+to ensure that simple branching points
+exist on the discriminant locus.
+When $f$ has repeated roots, $f(t)^2$ acquires roots of multiplicity
+$\ge 4$, and the analysis of local monodromy at such higher-order
+singularities requires versal deformations of
+$A_k$-singularities \cite{AGLV1993}.
+We expect Theorem~\ref{thm:main} to hold without the squarefree
+condition, but we impose it here for clarity.
+\end{remark}
+
+The proof occupies Sections~\ref{sec:monodromy}--\ref{sec:proof}
+and proceeds in three steps:
+\begin{enumerate}[nosep, label=(\roman*)]
+\item Construct the universal polynomial family and prove its
+      geometric monodromy group is $S_{2d}$
+      (Section~\ref{sec:monodromy}).
+\item Apply the effective Chebotarev density theorem for
+      higher-dimensional parameter spaces
+      (Section~\ref{sec:chebotarev}).
+\item Bound the topological error term via Katz's Betti number
+      estimates, complemented by the Grothendieck--Ogg--Shafarevich
+      formula on one-dimensional slices (Section~\ref{sec:GOS}).
+\end{enumerate}
+
+% ═══════════════════════════════════════════════════════════════════════
+\section{The Universal Family and Its Monodromy Group}
+\label{sec:monodromy}
+% ═══════════════════════════════════════════════════════════════════════
+
+\subsection{The universal polynomial}\label{subsec:universal}
+
+Fix a squarefree monic polynomial
+$f(t) = t^d + c_{d-1}t^{d-1} + \cdots + c_0 \in \Fq[t]$.
+Define the \emph{universal polynomial}
+\begin{equation}\label{eq:universal}
+    F(t,\mathbf{a})
+    \;=\;
+    f(t)^2 + a_0 + a_1\,t + \cdots + a_d\,t^d
+    \;\in\; \Fq[\mathbf{a}][t],
+\end{equation}
+a monic polynomial of degree $2d$ in $t$.
+Let $\mathcal{H} = \{F(t,\mathbf{a})=0\}
+\subset \mathcal{M} \times \Affine^1_t$,
+and $\pi: \mathcal{H} \to \mathcal{M}$ the projection.
+This is a finite morphism of degree $2d$.
+
+The coefficient of $t^k$ in $F$ is:
+\begin{equation}\label{eq:coefficients}
+    [t^k]\, F \;=\;
+    \begin{cases}
+    [t^k]\, f(t)^2 & \text{if } d+1 \le k \le 2d, \\[3pt]
+    [t^k]\, f(t)^2 \;+\; a_k & \text{if } 0 \le k \le d.
+    \end{cases}
+\end{equation}
+The top $d-1$ sub-leading coefficients
+(of $t^{2d-1}, \ldots, t^{d+1}$) are fixed constants
+determined by $f$, while the bottom $d+1$ coefficients
+(of $t^d, \ldots, t^0$) vary freely with $\mathbf{a}$.
+This \emph{split structure} is crucial for the primitivity argument.
+
+\begin{definition}\label{def:disc_locus}
+The \emph{discriminant locus} is
+$\mathcal{D}
+= \{\mathbf{a} \in \mathcal{M} :
+\disc_t(F(t,\mathbf{a})) = 0\}$.
+Over $\mathcal{M}^\circ = \mathcal{M} \setminus \mathcal{D}$,
+the morphism $\pi$ is \'etale, defining the
+\emph{geometric monodromy group}
+\[
+    G_{\mathrm{geom}}
+    \;=\;
+    \mathrm{Im}\!\left(\,
+    \pi_1^{\mathrm{\acute{e}t}}
+    \bigl(\mathcal{M}^\circ_{\Fqbar}\bigr)
+    \;\to\; S_{2d}
+    \,\right).
+\]
+\end{definition}
+
+We establish $G_{\mathrm{geom}} = S_{2d}$ in three steps.
+
+\subsection{Step 1: Irreducibility (Transitivity)}
+\label{subsec:irred}
+
+\begin{proposition}\label{prop:irred}
+The polynomial $F(t,\mathbf{a})$ is irreducible over
+$\Fqbar(\mathbf{a})$.
+\end{proposition}
+
+\begin{proof}
+Write $F$ as an element of $R[a_0]$ where
+$R = \Fqbar[t, a_1, \ldots, a_d]$:
+\[
+    F \;=\; a_0 + \bigl(f(t)^2 + a_1 t + \cdots + a_d t^d\bigr).
+\]
+Since $F$ is \emph{degree one} in $a_0$ with coefficients in the
+integral domain $R$, it is irreducible in
+$R[a_0] = \Fqbar[t, a_0, \ldots, a_d]$.
+
+This ring is a UFD (polynomial ring over a field).
+By Gauss's lemma, if $F$ were reducible in
+$\Fqbar(\mathbf{a})[t]$, clearing denominators would yield
+a nontrivial factorization in $\Fqbar[\mathbf{a}, t]$,
+contradicting the above.
+\end{proof}
+
+\begin{corollary}\label{cor:transitive}
+$G_{\mathrm{geom}}$ acts transitively on the $2d$ roots of $F$.
+\end{corollary}
+
+\begin{proof}
+Irreducibility over $\Fqbar(\mathbf{a})$ implies the generic fiber
+of $\mathcal{H}^\circ \to \mathcal{M}^\circ$ is connected,
+equivalent to transitivity (\cite[Exp.~V, Prop.~8.2]{SGA1}).
+\end{proof}
+
+\subsection{Step 2: Primitivity}\label{subsec:primitive}
+
+A transitive subgroup $G \le S_n$ is \emph{primitive} if it
+preserves no nontrivial block partition of $\{1,\ldots,n\}$.
+For polynomial coverings, imprimitivity is equivalent to a
+functional decomposition $F(t) = g(h(t))$ with
+$1 < \deg h < n$
+(\cite{mueller1993, turnwald1995}).
+
+\begin{proposition}\label{prop:primitive}
+$G_{\mathrm{geom}}$ is primitive.
+\end{proposition}
+
+\begin{proof}
+Suppose for contradiction that there exist monic polynomials
+$h \in \Fqbar(\mathbf{a})[t]$ of degree $m$ and
+$g \in \Fqbar(\mathbf{a})[x]$ of degree $n = 2d/m$
+(with $1 < m < 2d$, $m \mid 2d$) such that
+\begin{equation}\label{eq:decomp}
+    F(t,\mathbf{a})
+    \;=\; g\bigl(h(t,\mathbf{a}),\;\mathbf{a}\bigr).
+\end{equation}
+Since $m \mid 2d$ and $m < 2d$, we have $m \le d$ and $n \ge 2$.
+
+\textbf{Normalization.}
+Replacing $h(t)$ by $h(t) - h(0)$ and $g(x)$ by $g(x + h(0))$
+preserves \eqref{eq:decomp} while achieving
+\begin{equation}\label{eq:normalize}
+    h(0) = 0.
+\end{equation}
+Write $h(t) = t^m + h_{m-1}t^{m-1} + \cdots + h_1\, t$
+(with $h_i \in \Fqbar(\mathbf{a})$, no constant term), and
+$g(x) = x^n + g_{n-1}x^{n-1} + \cdots + g_0$.
+
+\textbf{Coefficient analysis.}
+For $1 \le j \le m-1$, the coefficient $[t^{2d-j}]$ in the
+expansion of $g(h(t))$ depends only on $h(t)^n$ at this degree
+(since $g_{n-1} h(t)^{n-1}$ contributes at degree $\le 2d - m$,
+and $2d - j > 2d - m$ for $j < m$).
+Specifically:
+\[
+    [t^{2d-j}]\, g(h(t))
+    \;=\; n\, h_{m-j}
+    \;+\; \Phi_j(h_{m-1}, \ldots, h_{m-j+1})
+\]
+for a universal polynomial $\Phi_j$ (with $\Phi_1 = 0$).
+
+Since $m \le d$, we have $2d - j \ge 2d - (m-1) \ge d + 1$
+for all $1 \le j \le m - 1$.
+By the split structure~\eqref{eq:coefficients},
+$[t^{2d-j}]\, F$ is a \emph{fixed constant} in $\Fq$
+for these degrees.
+
+Equating inductively: for $j = 1$,
+$n \cdot h_{m-1} = 2c_{d-1}$,
+so $h_{m-1} = 2c_{d-1}/n \in \Fq$ (using
+$\gcd(n, \mathrm{char}) = 1$ since $n \le 2d < p$).
+For $j = 2, \ldots, m-1$, each step determines $h_{m-j}$
+as a fixed element of $\Fq$ in terms of previously determined
+coefficients.
+Thus $h_{m-1}, \ldots, h_1 \in \Fq$ are all fixed constants.
+Combined with the normalization $h_0 = 0$,
+the polynomial $h(t) \in \Fq[t]$ is entirely independent of
+$\mathbf{a}$.
+
+\textbf{Contradiction.}
+Since $h \in \Fq[t]$ is fixed, $F(t,\mathbf{a}) = g(h(t),\mathbf{a})$.
+The coefficients of $F$ at degrees $0 \le k \le d$ are
+$[t^k] f(t)^2 + a_k$, providing $d + 1$ independent free
+parameters $(a_0, \ldots, a_d)$.
+But $g$ has only $n = 2d/m$ free coefficients
+$(g_0, \ldots, g_{n-1})$, and $n \le d < d + 1$.
+The polynomial map
+$(g_0, \ldots, g_{n-1})
+\mapsto \bigl([t^0]\, g(h(t)), \ldots, [t^d]\, g(h(t))\bigr)$
+goes from $\Affine^n$ to $\Affine^{d+1}$ with $n < d+1$,
+hence is not surjective.
+This contradicts the fact that the left-hand side ranges over
+all of $\Affine^{d+1}$ as $\mathbf{a}$ varies.
+\end{proof}
+
+\begin{remark}\label{rem:d1_primitive}
+When $d = 1$, the group $S_2$ has no proper transitive subgroup,
+so primitivity is automatic.
+\end{remark}
+
+\subsection{Step 3: Transpositions from simple branching}
+\label{subsec:transposition}
+
+\begin{proposition}\label{prop:transposition}
+Assume $f(t)$ is squarefree and $\mathrm{char}(\Fq) > 2d$.
+Then $G_{\mathrm{geom}}$ contains a transposition.
+\end{proposition}
+
+\begin{proof}
+We exhibit smooth points of $\mathcal{D}$ where exactly two roots
+of $F$ coalesce.
+
+\textbf{Setup.}
+Since $f$ is squarefree, it has $d$ distinct roots
+$\alpha_1, \ldots, \alpha_d \in \Fqbar$.
+At $\mathbf{a} = \mathbf{0}$, the polynomial
+$F(t, \mathbf{0}) = f(t)^2$ has each $\alpha_j$ as a double root.
+
+\textbf{Independent unfolding via Vandermonde.}
+Consider the evaluation map
+$\varphi : \Fqbar^d \to \Fqbar^d$ defined by
+\[
+    \varphi(a_0, \ldots, a_{d-1})
+    \;=\;
+    \bigl(P(\alpha_1),\; P(\alpha_2),\;\ldots,\; P(\alpha_d)\bigr),
+\]
+where $P(t) = a_0 + a_1 t + \cdots + a_{d-1} t^{d-1}$.
+The Jacobian of $\varphi$ is the Vandermonde matrix
+$V(\alpha_1, \ldots, \alpha_d)$, whose determinant
+$\prod_{i<j}(\alpha_j - \alpha_i)$
+is nonzero since the $\alpha_j$ are distinct.
+Therefore $\varphi$ is an isomorphism,
+and the $d$ parameters $(a_0, \ldots, a_{d-1})$
+independently control the perturbation at each double root.
+
+Concretely, near $\alpha_j$ and $\mathbf{a} = \mathbf{0}$,
+the local equation of $F$ in the coordinate $u = t - \alpha_j$ is
+\[
+    F(\alpha_j + u,\, \mathbf{a})
+    \;=\;
+    f'(\alpha_j)^2 u^2 + P(\alpha_j) + O(u \cdot \mathbf{a})
+    + O(u^3).
+\]
+Since $f$ is squarefree, $f'(\alpha_j) \ne 0$
+(using $\mathrm{char}(\Fq) > 2d \ge \deg f'+ 1$).
+The double root at $u = 0$ splits into two simple roots when
+$P(\alpha_j) \ne 0$, or coalesces when $P(\alpha_j) = 0$.
+The invertibility of $\varphi$ means these $d$ conditions
+are independent.
+
+\textbf{Identifying simple nodes.}
+The discriminant locus $\mathcal{D}$ near $\mathbf{a} = \mathbf{0}$
+has $d$ smooth branches
+$\mathcal{D}_j = \{\mathbf{a} : P(\alpha_j) = 0\}$
+for $j = 1, \ldots, d$,
+intersecting transversally at the origin.
+A general point on $\mathcal{D}_j$
+(away from the other branches) corresponds to a polynomial
+$P_\mathbf{a}$ with exactly one double root (near $\alpha_j$)
+and $2d - 2$ simple roots.
+
+\textbf{Local monodromy.}
+By the Picard--Lefschetz formula
+(\cite[Exp.~XV, \S3]{SGA7}; \cite[\S I.6]{katz1988}),
+an \'etale loop around the smooth locus of $\mathcal{D}_j$
+transposes the two coalescing sheets and fixes all others.
+This is a transposition in $G_{\mathrm{geom}}$.
+\end{proof}
+
+\begin{remark}\label{rem:nonsqfree}
+When $f$ is not squarefree, double roots of $f$ become
+fourfold roots of $f^2$, and local monodromy may produce
+products of transpositions rather than a single transposition.
+Extracting an individual transposition then requires
+$A_k$-singularity analysis \cite{AGLV1993}.
+We leave this extension to future work.
+\end{remark}
+
+\subsection{Conclusion: the full symmetric group}
+
+\begin{theorem}\label{thm:monodromy}
+Let $f \in \Fq[t]$ be squarefree monic of degree $d \ge 1$ with
+$\mathrm{char}(\Fq) > 2d$.
+Then $G_{\mathrm{geom}} = S_{2d}$.
+\end{theorem}
+
+\begin{proof}
+$G_{\mathrm{geom}}$ is transitive
+(Corollary~\ref{cor:transitive}),
+primitive (Proposition~\ref{prop:primitive}),
+and contains a transposition
+(Proposition~\ref{prop:transposition}).
+By Jordan's theorem
+(\cite[Thm.~3.3E]{dixon1996}),
+a \emph{primitive} subgroup of $S_n$ containing a transposition
+equals $S_n$.
+Hence $G_{\mathrm{geom}} = S_{2d}$.
+\end{proof}
+
+\begin{remark}\label{rem:jordan}
+The hypothesis of \emph{primitivity} is essential.
+The weaker statement
+``transitive + contains a transposition $\Rightarrow S_n$''
+is false: the dihedral group $D_4 \le S_4$ is transitive
+and contains transpositions, but $D_4 \ne S_4$.
+\end{remark}
+
+% ═══════════════════════════════════════════════════════════════════════
+\section{Counting Irreducibles via the Chebotarev Density Theorem}
+\label{sec:chebotarev}
+% ═══════════════════════════════════════════════════════════════════════
+
+\subsection{Frobenius elements and factorization type}
+
+For $\mathbf{a} \in \mathcal{M}^\circ(\Fq)$,
+the Frobenius element $\Frob_\mathbf{a}$ is a well-defined
+conjugacy class in $S_{2d}$ whose cycle type
+$(d_1, \ldots, d_k)$ encodes the degrees of the irreducible
+factors of $P_\mathbf{a}$ over $\Fq$.
+Thus $P_\mathbf{a}$ is irreducible $\Leftrightarrow$
+$\Frob_\mathbf{a}$ is a $2d$-cycle.
+
+\begin{lemma}\label{lem:cycle_fraction}
+The proportion of $2d$-cycles in $S_{2d}$ is $1/(2d)$.
+\end{lemma}
+
+\begin{proof}
+There are $(2d-1)!$ such cycles, so the proportion is
+$(2d-1)!/(2d)! = 1/(2d)$.
+\end{proof}
+
+\subsection{The effective Chebotarev theorem
+for higher-dimensional varieties}
+
+We use the following result, which combines the
+Grothendieck--Lefschetz trace formula with Deligne's purity
+theorem \cite{deligne1980}.
+The formulation via the \emph{permutation sheaf} (rather than
+the Galois closure) avoids factorial-sized constants.
+
+\begin{theorem}[Effective Chebotarev;
+cf.\ {\cite[Thm.~9.2.6]{katz1988}},
+{\cite[\S9.7]{FJ2008}}]
+\label{thm:chebotarev}
+Let $U/\Fq$ be a smooth geometrically connected affine variety of
+dimension $n$, and let $\pi : \mathcal{Y} \to U$ be a finite
+\'etale cover of degree $N$ with connected geometric generic fiber,
+so that the monodromy group $G \le S_N$ is transitive.
+Let $\mathcal{F} = \pi_*\overline{\mathbb{Q}}_\ell$ be the
+associated permutation sheaf of rank $N$ on $U$, and let
+$C \subset G$ be a conjugacy class.
+Then
+\begin{equation}\label{eq:cheb}
+    \left|\;
+    \#\bigl\{\, u \in U(\Fq) : \Frob_u \in C \,\bigr\}
+    \;-\; \frac{|C|}{|G|}\, q^n
+    \;\right|
+    \;\le\;
+    B(\mathcal{F}) \cdot q^{n - 1/2}
+    \;+\; O_{N,n}(q^{n-1}),
+\end{equation}
+where $B(\mathcal{F}) = \sum_{i=0}^{2n}
+\dim H^i_c(U_{\Fqbar},\, \mathcal{F})$
+is the total Betti number of the \emph{sheaf} $\mathcal{F}$
+on $U$ (not the Betti number of the covering space).
+\end{theorem}
+
+\begin{remark}\label{rem:betti_bound}
+The decisive advantage of formulating the error in terms of
+$B(\mathcal{F})$ rather than the Betti numbers of the
+Galois closure is that the former avoids factors of $|G|$
+(which is $(2d)!$ for $G = S_{2d}$).
+By \cite[Thm.~12]{katz2001}, for the complement $U$ of a
+hypersurface of degree $\delta$ in $\Affine^{n}$:
+\begin{equation}\label{eq:katz_bound}
+    B(\mathcal{F}) \;\le\; N \cdot (2\delta + 1)^{n}.
+\end{equation}
+In our setting, $N = 2d$, $n = d + 1$, and $\delta$ is the
+\emph{total degree} of $\disc_t(F)$ as a polynomial in
+$\mathbf{a}$.
+Since $F(t,\mathbf{a})$ is monic of degree $2d$ in $t$ and each
+coefficient of $F$ is at most degree~$1$ in $\mathbf{a}$, the
+discriminant --- being the resultant of $F$ and $F'$, hence
+a determinant of size $(4d-1)$ whose entries are
+coefficients of $F$ and $F'$ --- has total degree at most
+\begin{equation}\label{eq:delta}
+    \delta \;=\; 2(2d) - 2 \;=\; 4d - 2
+\end{equation}
+in $\mathbf{a}$ (this is the classical bound for the total degree of
+the discriminant of a monic polynomial of degree $N$ in its
+coefficients; it should \emph{not} be confused with the
+\emph{weighted} degree $N(N-1) = 2d(2d-1)$, which assigns
+weight $N - i$ to the $i$-th coefficient).
+
+Hence $2\delta + 1 = 8d - 3$ and:
+\begin{equation}\label{eq:B_explicit}
+    B(\mathcal{F})
+    \;\le\;
+    2d \cdot (8d - 3)^{d+1}
+    \;\le\;
+    2d \cdot (8d)^{d+1}.
+\end{equation}
+The essential point: $B(\mathcal{F})$ depends on $d$ alone,
+not on $q$.
+\end{remark}
+
+% ═══════════════════════════════════════════════════════════════════════
+\section{Topological Complexity and the GOS Formula}
+\label{sec:GOS}
+% ═══════════════════════════════════════════════════════════════════════
+
+While the Katz bound~\eqref{eq:B_explicit} suffices for the
+asymptotic result, the Grothendieck--Ogg--Shafarevich (GOS)
+formula provides sharper bounds on one-dimensional slices and
+illuminates the geometric mechanism.
+
+\subsection{The GOS formula on a generic pencil}
+
+Let $\ell \cong \Affine^1 \hookrightarrow \mathcal{M}$ be a
+general affine line.
+After restricting and compactifying, we obtain a lisse
+$\overline{\mathbb{Q}}_\ell$-sheaf $\mathcal{F}_\ell$
+of rank $r = 2d - 1$
+(the reduced permutation representation) on an open
+$U_\ell \subset \Proj_{\Fqbar}$.
+The GOS formula \cite{grothendieck1977, raynaud1965, serre1979}
+states:
+\begin{equation}\label{eq:GOS}
+    \chi(\Proj_{\Fqbar},\, j_! \mathcal{F}_\ell)
+    \;=\; 2r
+    \;-\; \sum_{v \in \Proj \setminus U_\ell}
+    \bigl(\drop_v + \Sw_v\bigr).
+\end{equation}
+
+\subsection{Tameness kills wild ramification}
+
+Under $\mathrm{char}(\Fq) = p > 2d$:
+
+\emph{At finite bad points $v$}: the inertia group
+$I_v$ acts through a cyclic group of order dividing $2d$,
+which is coprime to $p$.
+Hence $\Sw_v(\mathcal{F}_\ell) = 0$
+(\cite[IV, \S2, Cor.~1]{serre1979}).
+
+\emph{At $v = \infty$}: the ramification indices divide $|S_{2d}|
+= (2d)!$.
+Since $p > 2d$, every integer from $1$ to $2d$ is coprime to $p$,
+so the wild inertia subgroup (a $p$-group) acts trivially on the
+$2d$ roots.
+Thus $\Sw_\infty = 0$.
+
+\subsection{One-dimensional Euler characteristic bound}
+
+Since all Swan conductors vanish, \eqref{eq:GOS} gives
+$\chi = 2r - \sum_v \drop_v$ with each
+$0 \le \drop_v \le r = 2d - 1$.
+By \eqref{eq:delta}, the number of finite bad fibers on a generic
+pencil is at most $D = 4d - 2$, plus one point at $\infty$.
+Hence:
+\begin{equation}\label{eq:chi_1d}
+    |\chi(\Proj_{\Fqbar}, j_!\mathcal{F}_\ell)|
+    \;\le\; (D + 2) \cdot r
+    \;\le\; 4d\,(2d-1)
+    \;\le\; 8d^2.
+\end{equation}
+
+This provides a tight polynomial bound on one-dimensional slices.
+The passage to the full $(d+1)$-dimensional parameter space
+uses the Katz bound~\eqref{eq:B_explicit} as stated in
+Remark~\ref{rem:betti_bound}.
+
+% ═══════════════════════════════════════════════════════════════════════
+\section{Proof of the Main Theorem}\label{sec:proof}
+% ═══════════════════════════════════════════════════════════════════════
+
+\begin{proof}[Proof of Theorem~\ref{thm:main}]
+\textbf{Step 1: Monodromy.}
+By Theorem~\ref{thm:monodromy}, $G_{\mathrm{geom}} = S_{2d}$.
+
+\textbf{Step 2: Chebotarev count.}
+Apply Theorem~\ref{thm:chebotarev} with $U = \mathcal{M}^\circ$,
+$n = d + 1$, $N = 2d$, $C = $ conjugacy class of $2d$-cycles.
+By Lemma~\ref{lem:cycle_fraction}, $|C|/|G| = 1/(2d)$.
+Using the Betti bound~\eqref{eq:B_explicit}:
+\begin{equation}\label{eq:count_intermediate}
+    N_{\mathrm{irr}}^{\circ}
+    \;:=\;
+    \#\{\mathbf{a} \in \mathcal{M}^\circ(\Fq) :
+    P_\mathbf{a} \text{ irreducible}\}
+    \;=\;
+    \frac{q^{d+1}}{2d}
+    + O_d(q^{d+1/2}).
+\end{equation}
+
+\textbf{Step 3: Discriminant locus.}
+$\mathcal{D}$ is a hypersurface of degree $\le 4d - 2$
+in $\Affine^{d+1}$ (see \eqref{eq:delta}),
+so $|\mathcal{D}(\Fq)| \le (4d-2)\,q^d + O_d(q^{d-1/2})$
+by Lang--Weil \cite{LW1954}.
+On $\mathcal{D}$, $P_\mathbf{a}$ has repeated roots, hence is
+reducible (since irreducible implies separable when
+$\mathrm{char} > \deg$).
+Thus $N_{\mathrm{irr}} = N_{\mathrm{irr}}^\circ$.
+
+\textbf{Step 4: Explicit positivity.}
+Write
+\begin{equation}\label{eq:positivity}
+    N_{\mathrm{irr}}
+    \;\ge\;
+    \frac{q^{d+1}}{2d}
+    - B(\mathcal{F}) \cdot q^{d+1/2}
+    - C'_d \cdot q^d,
+\end{equation}
+where $B(\mathcal{F}) \le 2d\,(8d)^{d+1}$
+(from \eqref{eq:B_explicit}) and
+$C'_d \le 4d - 2$ absorbs the Lang--Weil term.
+For $q \ge 2$, the $q^d$ term is dominated by $q^{d+1/2}$, so:
+\[
+    N_{\mathrm{irr}}
+    \;\ge\;
+    q^{d+1/2}\!\left(
+    \frac{q^{1/2}}{2d} - B(\mathcal{F}) - C'_d
+    \right).
+\]
+Since $C'_d \le 4d \le B(\mathcal{F})$ for $d \ge 1$,
+we may take $A_d = 2\,B(\mathcal{F}) \le 4d\,(8d)^{d+1}$.
+Then $N_{\mathrm{irr}} > 0$ when
+$q^{1/2} > 2d \cdot A_d$, i.e.,
+\[
+    q \;>\; \bigl(2d \cdot A_d\bigr)^2
+    \;=\; \bigl(8d^2\,(8d)^{d+1}\bigr)^2
+    \;=\; 64\,d^4\,(8d)^{2d+2}.
+\]
+Since $64\,d^4 \le (8d)^4$ for $d \ge 1$, this yields:
+\begin{equation}\label{eq:threshold}
+    q \;>\; (8d)^{2d+6}.
+\end{equation}
+\end{proof}
+
+\begin{remark}[On the threshold]\label{rem:threshold}
+The bound \eqref{eq:threshold} is far from optimal;
+it is driven by the worst-case Katz estimate for the Betti numbers.
+The corrected discriminant degree $\delta = 4d - 2$ (as opposed to
+the weighted degree $2d(2d-1)$ erroneously used in earlier versions)
+yields a significant improvement: the base of the exponential is
+$8d$ rather than $\sim 4d^2$.
+Numerical evidence (Section~\ref{sec:numerical}) strongly suggests
+that $N_{\mathrm{irr}} \ge 1$ holds for \emph{all} $q$ and $d$
+with $\mathrm{char}(\Fq) > 2d$.
+An approach via sieve methods or the large sieve inequality for
+function fields (as in \cite{bank2015}) could potentially
+yield much sharper bounds.
+\end{remark}
+
+% ═══════════════════════════════════════════════════════════════════════
+\section{Numerical Verification}\label{sec:numerical}
+% ═══════════════════════════════════════════════════════════════════════
+
+\begin{example}[$d = 1$, $f(t) = t$]\label{ex:d1}
+$\mathcal{I}_f$ is the set of all monic quadratics over $\Fq$.
+The exact count of irreducibles is $(q^2-q)/2$,
+matching $q^2/2 + O(q)$.
+
+\smallskip
+\noindent\textit{Data.}\;
+$q = 5$: $N_{\mathrm{irr}} = 10$, predicted $12.5$.\quad
+$q = 7$: $N_{\mathrm{irr}} = 21$, predicted $24.5$.\quad
+$q = 11$: $N_{\mathrm{irr}} = 55$, predicted $60.5$.
+\end{example}
+
+\begin{example}[$d = 2$, $f(t) = t^2 + 1$, $q = 11$]
+\label{ex:d2}
+$f$ is squarefree (irreducible over $\mathbb{F}_{11}$).
+$|\mathcal{I}_f| = 11^3 = 1331$;
+predicted $\lfloor 1331/4 \rfloor = 332$;
+direct computation gives $N_{\mathrm{irr}} = 330$.
+\end{example}
+
+\begin{example}[$d = 1$, $f(t) = t$, $q = 3$]
+\label{ex:small}
+$\mathrm{char} = 3 > 2 = 2d$, so the hypotheses hold.
+The explicit asymptotic threshold is astronomically large,
+yet $N_{\mathrm{irr}} = 3 > 0$.
+This illustrates that the theorem's bound is sufficient
+but vastly non-sharp.
+\end{example}
+
+% ═══════════════════════════════════════════════════════════════════════
+\section{Discussion}\label{sec:discussion}
+% ═══════════════════════════════════════════════════════════════════════
+
+\subsection{The topological obstruction perspective}
+
+The proof reduces to one principle:
+\emph{a connected covering with full symmetric monodromy cannot
+have all rational fibers reducible.}
+$S_{2d}$ is the global symmetry; Chebotarev translates it into
+equidistribution of Frobenius elements; the Katz/GOS bounds ensure
+the error is $O(q^{-1/2})$ relative to the main term.
+
+We emphasize that the GOS formula does \emph{not} produce
+the contradiction directly (as was incorrectly attempted in
+an earlier version via ``Swan conductor explosion'').
+Swan conductors are local invariants of a single sheaf
+and are always finite; the global factorization pattern is
+an arithmetic property of the ensemble of rational fibers,
+governed by equidistribution.
+
+\subsection{Relation to prior work}
+
+Bary-Soroker \cite{barysoroker2012} proved the function field
+Dirichlet theorem by the same monodromy paradigm.
+Our contribution is the adaptation to short intervals,
+which differs in two respects:
+(a) the parameter space is $(d+1)$-dimensional
+(requiring the higher-dimensional Chebotarev theorem), and
+(b) the rigid leading-term structure of $f(t)^2 + s(t)$
+demands a non-trivial primitivity analysis
+(Proposition~\ref{prop:primitive}).
+
+\subsection{Relation to the classical Legendre Conjecture}
+
+The function field proof succeeds because the Riemann Hypothesis
+is a theorem (Weil, Deligne) and the \'etale fundamental group
+provides a computable monodromy group.
+Over $\mathbb{Z}$, both ingredients are absent or conjectural.
+
+\subsection{Open questions}
+\begin{enumerate}[label=(\arabic*)]
+\item \emph{Removing the squarefree hypothesis.}
+See Remark~\ref{rem:nonsqfree}.
+
+\item \emph{Uniformity in $d$.}
+Does $N_{\mathrm{irr}} \ge 1$ for all $q$ and $d$
+with $\mathrm{char} > 2d$?
+
+\item \emph{Shorter intervals.}
+Minimize $e$ such that $\{f^2 + s : \deg s \le e\}$
+contains an irreducible.
+
+\item \emph{Higher powers.}
+For $k \ge 3$, study $[f^k, (f+1)^k]$.
+\end{enumerate}
+
+% ═══════════════════════════════════════════════════════════════════════
+\begin{thebibliography}{99}
+
+\bibitem{AGLV1993}
+  V.\,I.~Arnold, S.\,M.~Gusein-Zade, and A.\,N.~Varchenko,
+  \textit{Singularities of Differentiable Maps}, Vol.~II,
+  Birkh\"auser, 1988.
+
+\bibitem{bank2015}
+  E.~Bank, L.~Bary-Soroker, and L.~Rosenzweig,
+  ``Prime polynomials in short intervals and in arithmetic
+  progressions,''
+  \textit{Duke Math.\ J.}\ \textbf{164} (2015), 277--295.
+
+\bibitem{BHP2001}
+  R.\,C.~Baker, G.~Harman, and J.~Pintz,
+  ``The difference between consecutive primes, II,''
+  \textit{Proc.\ London Math.\ Soc.}\ \textbf{83} (2001), 532--562.
+
+\bibitem{barysoroker2012}
+  L.~Bary-Soroker,
+  ``Dirichlet's theorem for polynomial rings,''
+  \textit{Proc.\ Amer.\ Math.\ Soc.}\ \textbf{140} (2012), 731--740.
+
+\bibitem{ChenConductor}
+  R.~Chen,
+  ``Conductor incompressibility for Frey curves associated to
+  prime gaps: rigidity obstructions to the Wiles paradigm in
+  additive prime number theory,''
+  Zenodo, 2026.
+  \url{https://zenodo.org/records/18682375}
+
+\bibitem{ChenLandau}
+  R.~Chen,
+  ``On Landau's fourth problem: conductor rigidity and
+  Sato--Tate equidistribution for the $n^2+1$ family,''
+  Zenodo, 2026.
+  \url{https://zenodo.org/records/18683712}
+
+\bibitem{ChenAP}
+  R.~Chen,
+  ``The 2-2 coincidence: conductor rigidity for primes in
+  arithmetic progressions and the Bombieri--Vinogradov barrier,''
+  Zenodo, 2026.
+  \url{https://zenodo.org/records/18684151}
+
+\bibitem{deligne1977}
+  P.~Deligne,
+  \textit{Cohomologie \'{e}tale (SGA $4\tfrac{1}{2}$)},
+  Lecture Notes in Mathematics, Vol.~569, Springer, 1977.
+
+\bibitem{deligne1980}
+  P.~Deligne,
+  ``La conjecture de Weil.\ II,''
+  \textit{Publ.\ Math.\ IH\'ES} \textbf{52} (1980), 137--252.
+
+\bibitem{dixon1996}
+  J.\,D.~Dixon and B.~Mortimer,
+  \textit{Permutation Groups},
+  Graduate Texts in Mathematics, Vol.~163, Springer, 1996.
+
+\bibitem{FJ2008}
+  M.\,D.~Fried and M.~Jarden,
+  \textit{Field Arithmetic}, 3rd ed.,
+  Springer, 2008.
+
+\bibitem{grothendieck1977}
+  A.~Grothendieck \textit{et al.},
+  \textit{Cohomologie $\ell$-adique et fonctions $L$} (SGA~5),
+  Lecture Notes in Mathematics, Vol.~589, Springer, 1977.
+
+\bibitem{katz1988}
+  N.\,M.~Katz,
+  \textit{Gauss Sums, Kloosterman Sums, and Monodromy Groups},
+  Annals of Math.\ Studies, Vol.~116, Princeton Univ.\ Press, 1988.
+
+\bibitem{katz2001}
+  N.\,M.~Katz,
+  ``Sums of Betti numbers in arbitrary characteristic,''
+  \textit{Finite Fields Appl.}\ \textbf{7} (2001), 29--44.
+
+\bibitem{LW1954}
+  S.~Lang and A.~Weil,
+  ``Number of points of varieties in finite fields,''
+  \textit{Amer.\ J.\ Math.}\ \textbf{76} (1954), 819--827.
+
+\bibitem{mueller1993}
+  P.~M\"uller,
+  ``Primitive monodromy groups of polynomials,''
+  Contemp.\ Math.\ \textbf{186}, AMS, 1995, 385--401.
+
+\bibitem{raynaud1965}
+  M.~Raynaud,
+  ``Caract\'eristique d'Euler--Poincar\'e d'un faisceau et
+  cohomologie des vari\'et\'es ab\'eliennes,''
+  S\'em.\ Bourbaki, Exp.~286, 1964/65.
+
+\bibitem{ritt1922}
+  J.\,F.~Ritt,
+  ``Prime and composite polynomials,''
+  \textit{Trans.\ Amer.\ Math.\ Soc.}\ \textbf{23} (1922), 51--66.
+
+\bibitem{rosen2002}
+  M.~Rosen,
+  \textit{Number Theory in Function Fields},
+  Graduate Texts in Mathematics, Vol.~210, Springer, 2002.
+
+\bibitem{serre1979}
+  J.-P.~Serre,
+  \textit{Local Fields},
+  Graduate Texts in Mathematics, Vol.~67, Springer, 1979.
+
+\bibitem{serre1992}
+  J.-P.~Serre,
+  \textit{Topics in Galois Theory}, 2nd ed.,
+  A.\,K.\ Peters, 2008.
+
+\bibitem{SGA1}
+  A.~Grothendieck,
+  \textit{Rev\^etements \'etales et groupe fondamental} (SGA~1),
+  Lecture Notes in Mathematics, Vol.~224, Springer, 1971.
+
+\bibitem{SGA7}
+  A.~Grothendieck \textit{et al.},
+  \textit{Groupes de Monodromie en G\'eom\'etrie Alg\'ebrique}
+  (SGA~7), Lecture Notes in Mathematics, Vols.~288, 340,
+  Springer, 1972--73.
+
+\bibitem{turnwald1995}
+  G.~Turnwald,
+  ``On Schur's conjecture,''
+  \textit{J.\ Austral.\ Math.\ Soc.\ Ser.~A}
+  \textbf{58} (1995), 312--357.
+
+\bibitem{weil1948}
+  A.~Weil,
+  \textit{Sur les courbes alg\'ebriques et les vari\'et\'es qui
+  s'en d\'eduisent},
+  Actualit\'es Sci.\ Ind., Hermann, 1948.
+
+\bibitem{zannier2008}
+  U.~Zannier,
+  ``On composite lacunary polynomials and the proof of a
+  conjecture of Schinzel,''
+  \textit{Invent.\ Math.}\ \textbf{174} (2008), 127--138.
+
+\end{thebibliography}
+
+\end{document}

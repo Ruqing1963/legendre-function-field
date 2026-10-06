@@ -1,0 +1,38 @@
+{
+  "interval_counts": {
+    "rows": 186,
+    "d_range": [
+      1,
+      6
+    ],
+    "min_N_irr": 3,
+    "closed_form_checked": 141,
+    "closed_form_mismatches": 0,
+    "max_abs_err_over_q^d_by_d (p>2d)": {
+      "1": 1.0,
+      "2": 0.2,
+      "3": 0.119534,
+      "4": 0.157708,
+      "5": 0.08085,
+      "6": 0.017803
+    }
+  },
+  "twisted_identity": {
+    "rows": 24,
+    "identity_holds_all": true,
+    "E_within_bound_all": true,
+    "within_CM_bound_all": true
+  },
+  "exhaustive": {
+    "cases": 20,
+    "all_positive": true,
+    "smallest_min": 6
+  },
+  "factorization_types_total_variation_distance": {
+    "d=2,p=47": 0.01241,
+    "d=3,p=31": 0.01395,
+    "d=4,p=19": 0.02432,
+    "d=5,p=13": 0.03557,
+    "d=6,p=13": 0.03553
+  }
+}

@@ -1,2 +1,0 @@
-q,d,p,mode,intervals_total,orbits_examined,intervals_examined,min_N_irr,max_N_irr,main_term,min_ratio,max_ratio,mean_Lambda_over_q^(d+1),var_Lambda_over_q^(d+1),KR_prediction_d-2,min_Z,classical_bound_applies(q>d)
-3,8,3,all,2187,378,2187,1165,1289,1230.1875,0.94701,1.047808,1.0,5.501944,6,-3.03503,0

@@ -65,15 +65,20 @@ def exhaustive_table(e):
 
 
 def thresholds_table(t):
-    lines = [r"\begin{tabular}{rrrr}", r"\toprule",
-             r"$d$ & v5 claim (unproved) & Katz + Deligne & this paper (Cor.~5.3) \\", r"\midrule"]
+    lines = [r"\begin{tabular}{rrrrr}", r"\toprule",
+             r"$d$ & v5 claim (unproved) & Prop.~5.4 (Katz) & Cor.~5.3 (Cafure--Matera) & Prop.~5.5 (Sawin) \\",
+             r"\midrule"]
     for _, r in t[t.d.isin([1, 2, 3, 4, 5, 6, 8, 10, 15, 20, 30, 40, 50])].iterrows():
-        rev = f"{r.log10_revised_rigorous:.1f}"
-        if r.d <= 3:
-            rev += r"$^{\ast}$"
-        lines.append(f"{int(r.d)} & {r.log10_v5_claimed:.1f} & {r.log10_katz_betti:.1f} & {rev} \\\\")
+        vals = {"katz": r.log10_katz_betti, "cm": r.log10_revised_rigorous}
+        if str(r.log10_sawin) not in ("", "nan"):
+            vals["sawin"] = float(r.log10_sawin)
+        best = min(vals, key=vals.get)
+        cell = {k: (rf"\textbf{{{v:.1f}}}" if (k == best and r.d > 3) else f"{v:.1f}") for k, v in vals.items()}
+        star = r"$^{\ast}$" if r.d <= 3 else ""
+        lines.append(f"{int(r.d)} & {r.log10_v5_claimed:.1f} & {cell['katz']}{star} & {cell['cm']}{star} & "
+                     f"{cell.get('sawin', '--')}{star if 'sawin' in cell else ''} \\\\")
     lines += [r"\bottomrule",
-              r"\multicolumn{4}{l}{\footnotesize $^{\ast}$\,not needed: Theorem~D gives $N_{\rm irr}\ge1$ for all admissible $q$.}",
+              r"\multicolumn{5}{l}{\footnotesize $^{\ast}$\,not needed: Theorem~D gives $N_{\rm irr}\ge1$ for all admissible $q$.}",
               r"\end{tabular}"]
     return "\n".join(lines)
 
@@ -143,9 +148,12 @@ def main():
            "| case | TV distance |", "|---|---|"]
     for k, v in summary["factorization_types_total_variation_distance"].items():
         md.append(f"| {k} | {v} |")
-    md += ["", "## Thresholds (`data/thresholds.csv`)", "", "| d | log10 v5 claim (unproved) | log10 Katz+Deligne | log10 Cafure-Matera |", "|---|---|---|---|"]
+    md += ["", "## Thresholds (`data/thresholds.csv`)", "",
+           "log10 of the threshold q_0(d) beyond which N_irr >= 1. For d <= 3 no threshold is needed (Theorem D).", "",
+           "| d | v5 claim (unproved) | Katz + Deligne | Cafure-Matera | Sawin 2021 |", "|---|---|---|---|---|"]
     for _, r in t[t.d <= 12].iterrows():
-        md.append(f"| {r.d} | {r.log10_v5_claimed} | {r.log10_katz_betti} | {r.log10_revised_rigorous} |")
+        sw = "" if str(r.log10_sawin) in ("", "nan") else r.log10_sawin
+        md.append(f"| {r.d} | {r.log10_v5_claimed} | {r.log10_katz_betti} | {r.log10_revised_rigorous} | {sw} |")
     with open(os.path.join(RES, "summary.md"), "w", encoding="utf-8") as fh:
         fh.write("\n".join(md) + "\n")
     print(json.dumps(summary, indent=2))

@@ -1,4 +1,4 @@
-"""
+﻿"""
 Experiment 4 -- explicit thresholds q_0(d) such that N_irr >= 1 for all q > q_0(d) (p > 2d).
 
   * v5_claimed      : (8d)^(2d+6), stated in the Zenodo v5 preprint.  NOT supported by a valid
@@ -7,6 +7,10 @@ Experiment 4 -- explicit thresholds q_0(d) such that N_irr >= 1 for all q > q_0(
                       twisted root variety W of dimension d+1 and degree delta = (d-1)!:
                       q_0 = max{ 2(d+2) delta^2 , (A + sqrt(B))^2 },  A = (delta-1)(delta-2), B = 5 delta^(13/3) + 2.
                       For d <= 3 the exact formulas of Section 6 give N_irr >= 1 for every admissible q.
+  * katz_betti      : Proposition 5.4, Katz's explicit Betti bound + Deligne: q > 9 (d+1)^(6d-2).
+  * sawin          : Proposition 5.6, from Sawin (Duke Math. J. 170 (2021), Cor. 4.7) with n = 2d, m = d-1:
+                      |2d N_irr - q^(d+1)| <= C q^((d+2)/2) + d q + d^2,  C = 6 (2d+2)^(3d-1)  (p > 2d),
+                      so N_irr >= 1 once q > (C+1)^(2/d).  Defined for d >= 2.
 
 Output: data/thresholds.csv  (log10 values, since numbers are astronomically large)
 """
@@ -44,6 +48,14 @@ def log10_katz(d):
     return 2 * (math.log10(3) + (3 * d - 1) * math.log10(d + 1))
 
 
+def log10_sawin(d):
+    """q > (C + 1)^(2/d) with C = 6 (2d+2)^(3d-1); None for d = 1 (Sawin needs h < n)."""
+    if d < 2:
+        return None
+    lgC = math.log10(6) + (3 * d - 1) * math.log10(2 * d + 2)
+    return (2 / d) * (lgC + math.log10(1 + 10 ** (-lgC)))
+
+
 def main():
     os.makedirs(DATA, exist_ok=True)
     rows = []
@@ -57,6 +69,7 @@ def main():
             "log10_v5_claimed": round(log10_v5(d), 4),
             "log10_katz_betti": round(log10_katz(d), 4),
             "log10_revised_rigorous": round(rev, 4),
+            "log10_sawin": "" if log10_sawin(d) is None else round(log10_sawin(d), 4),
             "revised_q0_if_small": int(math.ceil(10 ** rev)) if rev < 15 else "",
             "note": note,
         })

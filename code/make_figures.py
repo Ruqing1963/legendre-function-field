@@ -128,7 +128,9 @@ def fig4(th):
     fig, ax = plt.subplots(figsize=(6.4, 3.6))
     ax.plot(th.d, th.log10_v5_claimed, "--", color=SERIES[1], lw=2, label="v5 claim $(8d)^{2d+6}$ (unproved)")
     ax.plot(th.d, th.log10_katz_betti, "-", color=SERIES[2], lw=2, label="Katz Betti bound + Deligne (Prop. 5.4)")
-    ax.plot(th.d, th.log10_revised_rigorous, "-", color=SERIES[0], lw=2, label="Cafureâ€“Matera (Cor. 5.3)")
+    ax.plot(th.d, th.log10_revised_rigorous, "-", color=SERIES[0], lw=2, label="Cafure-Matera (Cor. 5.3)")
+    sw = th[th.d >= 2]
+    ax.plot(sw.d, pd.to_numeric(sw.log10_sawin), "-", color=SERIES[6], lw=2, label="via Sawin 2021 (Prop. 5.5)")
     ax.axvspan(0.5, 3.5, color=GRID, alpha=0.6, lw=0)
     ax.text(2, ax.get_ylim()[1] * 0.45, "exact\n(Thm D)", ha="center", va="top", fontsize=8, color=INK2)
     ax.set_xlabel("d")

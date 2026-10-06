@@ -1,4 +1,4 @@
-"""
+﻿"""
 Experiment 3 -- verify the twisted-variety identity (Theorem 4.3 of the revised paper)
 
     #W(F_q) = 2d * N_irr + E,   0 <= E <= sum_{e | 2d, e < 2d} q^e,
@@ -49,6 +49,8 @@ def main():
                 "W_points": tw["W"], "generators": tw["gen"], "E_subfield": tw["E"],
                 "N_irr": N, "identity_holds": int(tw["gen"] == 2 * d * N),
                 "E_bound": e_bound, "E_within_bound": int(0 <= tw["E"] <= e_bound),
+                "E_sharp_bound_dq+d^2": d * q + d * d if p > 2 * d else "",
+                "E_within_sharp_bound": int(tw["E"] <= d * q + d * d) if p > 2 * d else "",
                 "W_minus_q^(d+1)": tw["W"] - q ** (d + 1),
                 "CM_bound": round(cm_bound, 2),
                 "CM_hypothesis_q>2(d+2)delta^2": int(q > 2 * (d + 2) * delta ** 2),

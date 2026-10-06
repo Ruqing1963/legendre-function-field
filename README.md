@@ -23,7 +23,7 @@ v5 was reviewed in detail. The full referee report is in [`review/REVIEW_en.md`]
 | The primitivity proof applied the decomposition criterion outside its scope. | Re-proved by isolating $a_0$ and applying Lüroth (Prop. 3.2). |
 | The transposition proof misidentified the discriminant branches and needed $f$ squarefree. | New proof that does **not** need $f$ squarefree (Prop. 3.3). |
 | The effective Chebotarev bound was stated with the permutation sheaf. | Replaced by an exact twisted-variety identity (Thm B). |
-| The threshold $(8d)^{2d+6}$ rested on a Betti bound that is not in the cited source. | Replaced by a proved explicit threshold (Thm C, Cor. 5.3, Prop. 5.4). |
+| The threshold $(8d)^{2d+6}$ rested on a Betti bound that is not in the cited source. | Replaced by proved explicit thresholds (Thm C, Cor. 5.3, Props. 5.4–5.5), compared with Sawin's 2021 short-interval bound. |
 | The numerical evidence was three small examples. | Now 186 exact counts for $d\le6$, an exhaustive search over $f$, and a check of the identity. |
 
 ## Main results of v6
@@ -33,6 +33,9 @@ v5 was reviewed in detail. The full referee report is in [`review/REVIEW_en.md`]
 - **Theorem C.** Assume $p>2d$ and let $\delta=(d-1)!$. If $q>2(d+2)\delta^2$, then
   $$|2d\,N_{\rm irr}-q^{d+1}|<(\delta-1)(\delta-2)\,q^{d+1/2}+(5\delta^{13/3}+2)\,q^d.$$
   This follows from the Cafure–Matera explicit Lang–Weil bound. It gives $N_{\rm irr}\ge1$ for $q>q_0(d)$, for example $q_0(4)\approx1.65\cdot10^4$ and $q_0(5)\approx7.3\cdot10^6$.
+- **Comparison with Sawin (2021).** Sawin's square-root cancellation theorem for short intervals ([Duke Math. J. 170 (2021)](https://arxiv.org/abs/1809.05137)) gives the stronger estimate
+  $$|2d\,N_{\rm irr}-q^{d+1}|\le 6(2d+2)^{3d-1}q^{d/2+1}+dq+d^2\qquad(p>2d).$$
+  This is Proposition 5.5, which combines Sawin's bound with Theorem B and a sharper bound on $E$. Its threshold is about $(2d+2)^6$, which beats Theorem C for every $d\ge5$; Theorem C remains better for $d=4$. Sawin's variety of ordered roots is the root variety $V$ of the paper, so Theorem B is a twisted form of his point count.
 - **Theorem D.** For $d\le3$ there are closed formulas, valid for every admissible $q$:
   - $d=1$: $N_{\rm irr}=(q^2-q)/2$.
   - $d=2$: $N_{\rm irr}=(q^3-q)/4$.
@@ -40,7 +43,7 @@ v5 was reviewed in detail. The full referee report is in [`review/REVIEW_en.md`]
 
   So for $d\le3$ every Legendre interval contains an irreducible polynomial.
 
-The case of fixed $q$ with $d\to\infty$ is the genuine analogue of Legendre's conjecture, and it remains **open**. It would require prescribing about half of the coefficients of an irreducible polynomial.
+The case of fixed $q$ with $d\to\infty$ is the genuine analogue of Legendre's conjecture, and it remains **open**. It would require prescribing about half of the coefficients of an irreducible polynomial. After reversing polynomials, the Legendre interval becomes a residue class modulo $t^d$ at exactly level of distribution $1/2$. That is the same barrier as for the integers, where the Riemann hypothesis just fails to reach Legendre's conjecture.
 
 ## Repository layout
 
@@ -113,6 +116,8 @@ The full tables are in [`results/summary.md`](results/summary.md).
 - E. Bank, L. Bary-Soroker, L. Rosenzweig, *Prime polynomials in short intervals and in arithmetic progressions*, Duke Math. J. 164 (2015), 277–295. [arXiv:1302.0625](https://arxiv.org/abs/1302.0625)
 - A. Cafure, G. Matera, *Improved explicit estimates on the number of solutions of equations over a finite field*, Finite Fields Appl. 12 (2006), 155–185. [arXiv:math/0405302](https://arxiv.org/abs/math/0405302)
 - N. M. Katz, *Sums of Betti numbers in arbitrary characteristic*, Finite Fields Appl. 7 (2001), 29–44.
+- W. Sawin, *Square-root cancellation for sums of factorization functions over short intervals in function fields*, Duke Math. J. 170 (2021), 997–1026. [arXiv:1809.05137](https://arxiv.org/abs/1809.05137)
+- W. Sawin, M. Shusterman, *On the Chowla and twin primes conjectures over F_q[T]*, Ann. of Math. 196 (2022). [arXiv:1808.04001](https://arxiv.org/abs/1808.04001)
 - M. Lalín, O. Larocque, *The number of irreducible polynomials with the first two prescribed coefficients over a finite field*, Rocky Mountain J. Math. 46 (2016), 1587–1618.
 
 ## License

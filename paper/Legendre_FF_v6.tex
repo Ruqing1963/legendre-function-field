@@ -71,6 +71,8 @@ of degree at most $(d-1)!$, and $0\le E<q^{d+1}/(q-1)$.
 Combined with the explicit Lang--Weil estimate of Cafure and Matera,
 this yields a fully explicit and rigorous threshold
 $q_0(d)$ beyond which every Legendre interval contains an irreducible polynomial.
+We compare it with the near square-root bound that follows from Sawin's work on short
+intervals (2021), which gives the better threshold for $d\ge5$.
 For $d\le 3$ we obtain closed formulas valid for every admissible $q$;
 for $d=3$ they agree with Kuz'min's count of irreducible polynomials with
 two prescribed coefficients.
@@ -123,6 +125,20 @@ Taking $k=2d$, $m=d$ and replacing $f$ by $f^2$ gives, for every odd $q$,
 This is exactly the ``Main Theorem'' of v5 of this preprint, which therefore
 is not new. The implied constant in \cite{BBR2015} is not explicit.
 
+Sawin \cite{Sawin2021} sharpened this to nearly square-root cancellation with an explicit
+constant. He counts points on the variety $X_{n,m,\mathbf c}$ of ordered roots of polynomials
+in a short interval and computes its singular locus. For our interval ($n=2d$, $m=d-1$) that
+variety is the root variety $V$ of Section~\ref{sec:twisted}. His Corollary~4.7 gives, for every $p$,
+\begin{equation}\label{eq:sawin}
+  \Bigl|\sum_{P\in\cI_f}\Lambda(P)-q^{d+1}\Bigr|
+  \le 6\,(2d+2)^{3d-1}\,q^{\frac12\left(d+2+\lfloor 2d/p\rfloor-\lfloor (d-1)/p\rfloor\right)},
+\end{equation}
+where $\Lambda$ is the von Mangoldt function\footnote{The main term is printed as $q^n$ in
+\cite[Cor.~4.7]{Sawin2021}. Since the interval has $q^{n-m}$ elements and $\Lambda$ has mean $1$,
+it should read $q^{n-m}$, which is $q^{d+1}$ here.}.
+For $p>2d$ the exponent is $(d+2)/2$, so the error is $O_d(q^{d/2+1})$ instead of $O_d(q^{d+1/2})$.
+Proposition~\ref{prop:sawin} converts \eqref{eq:sawin} into a bound for $\Nirr$.
+
 \subsection{Results of this paper}
 Throughout, $q$ is a power of a prime $p$, and $f\in\Fq[t]$ is monic of degree $d\ge1$.
 We write $\Ggeom$ for the Galois group of $F(t,\ba)$ over $\Fqbar(\ba)$,
@@ -170,7 +186,10 @@ polynomial, for every $q$ in the stated range.
 
 Theorem~C gives, for example, $q_0(4)\approx1.65\times10^{4}$ and
 $q_0(5)\approx7.3\times10^{6}$ (Table~\ref{tab:thresholds}).
-For $d\le3$ no threshold is needed.
+The bound \eqref{eq:sawin} gives a threshold of size about $(2d+2)^6$, which is better than
+Theorem~C for every $d\ge5$; Theorem~C is better for $d=4$. For $d\le3$ no threshold is needed.
+Theorem~B is a twisted form of the point count in \cite{Sawin2021}; its new content is the exact
+identity together with the elementary error term $E$.
 Theorem~D(i)--(ii) are classical consequences of the counts of irreducible
 polynomials with prescribed trace \cite{Carlitz1952}, and (iii) is a special
 case of Kuz'min's formula for two prescribed coefficients
@@ -459,12 +478,31 @@ and Lemma~\ref{lem:W}, because a linear change of coordinates preserves dimensio
 degree and absolute irreducibility.
 \end{proof}
 
-\begin{remark}
+\begin{remark}\label{rem:twist}
 Theorem~B is a twisted form of the Chebotarev argument. It counts the Frobenius class of a
 $2d$-cycle by counting rational points on one twist of the $S_{2d}$-torsor $V^\circ$.
-No étale cohomology of local systems is needed, and the error term reduces to a point count
-on an explicit, absolutely irreducible complete intersection.
+The variety $V$ is the variety $X_{n,m,\mathbf c}$ of \cite{Sawin2021} with $n=2d$, $m=d-1$.
+Sawin twists the cohomology of $X_{n,m,\mathbf c}$ by representations of $S_n$, whereas here we
+twist the variety itself by a $2d$-cycle. The two are related as follows.
+Each $\beta\in\mathbb F_{q^{2d}}$ with $\chi_\beta\in\cI_f$ has $\chi_\beta=\pi^r$ for a monic
+irreducible $\pi$ of degree $2d/r$, and each such $\pi$ arises from exactly $\deg\pi$ values of $\beta$. Hence
+\begin{equation}\label{eq:W-Lambda}
+  \#W(\Fq)=\sum_{P\in\cI_f}\Lambda(P),\qquad E(f)=\sum_{\substack{P=\pi^r\in\cI_f\\ r\ge2}}\deg\pi .
+\end{equation}
 \end{remark}
+
+\begin{lemma}\label{lem:Esharp}
+If $p>2d$, then $0\le E(f)\le dq+d^2$.
+\end{lemma}
+
+\begin{proof}
+Let $\pi^r\in\cI_f$ with $r\ge2$ and $e=\deg\pi=2d/r\le d$. For $1\le j\le e$, the coefficient of
+$t^{2d-j}$ in $\pi^r$ is $r\pi_{e-j}+\Phi_j(\pi_{e-1},\dots,\pi_{e-j+1})$ with $\Phi_j$ a universal
+polynomial, and $r\le 2d<p$ is invertible. The coefficients of $t^{2d-1},\dots,t^{d+1}$ are prescribed,
+so $\pi_{e-1},\dots,\pi_{e-\min(e,d-1)}$ are determined. If $e=d$, only the constant term of $\pi$ is
+free, giving at most $q$ choices of weight $d$. If $e<d$, $\pi$ is determined, giving at most one choice
+of weight $e$ for each divisor $e$ of $2d$ with $e<d$. The total is at most $dq+\sum_{e<d}e\le dq+d^2$.
+\end{proof}
 
 % =====================================================================
 \section{An explicit bound}\label{sec:explicit}
@@ -506,8 +544,9 @@ The left side increases for $s>A/2$, and at $s=A+\sqrt B$ it equals $A\sqrt B\ge
 \centering
 \input{tables/thresholds.tex}
 \caption{Thresholds for $\Nirr\ge1$, as $\log_{10}q_0(d)$. The column ``v5'' is the value
-$(8d)^{2d+6}$ claimed in v5; it was not proved. The column ``this paper'' is
-Corollary~\ref{cor:threshold}. For $d\le3$ Theorem~D removes the threshold.
+$(8d)^{2d+6}$ claimed in v5; it was not proved. The other columns are
+Proposition~\ref{prop:katz}, Corollary~\ref{cor:threshold} and Proposition~\ref{prop:sawin}.
+The smallest rigorous value in each row is in bold. For $d\le3$ Theorem~D removes the threshold.
 Source: \texttt{data/thresholds.csv}.}
 \label{tab:thresholds}
 \end{table}
@@ -535,13 +574,31 @@ This gives $|\#W(\Fq)-q^{d+1}|\le(\sigma_d-1)q^{d+1/2}$, and we finish with $E(f
 For $s=\sqrt q>\sigma_d$ we have $s^2-(\sigma_d-1)s-2>\sigma_d-2>0$.
 \end{proof}
 
+The strongest available estimate comes from Sawin's computation of the singular locus of $V$.
+
+\begin{proposition}[via {\cite[Cor.~4.7]{Sawin2021}}]\label{prop:sawin}
+Let $d\ge2$, $p>2d$ and $C_d=6(2d+2)^{3d-1}$. Then for every $q$,
+\[
+ \bigl|2d\,\Nirr(f)-q^{d+1}\bigr|\le C_d\,q^{d/2+1}+dq+d^2 ,
+\]
+and hence $\Nirr(f)\ge1$ for all $q>(C_d+1)^{2/d}$. This threshold is about $(2d+2)^6$.
+\end{proposition}
+
+\begin{proof}
+By Theorem~B and \eqref{eq:W-Lambda}, $2d\Nirr=\sum_{P\in\cI_f}\Lambda(P)-E(f)$. Apply \eqref{eq:sawin},
+whose exponent is $(d+2)/2$ when $p>2d$, and Lemma~\ref{lem:Esharp}. For $q>(C_d+1)^{2/d}$ we have
+$q\ge2d$, hence $dq+d^2\le q^2\le q^{d/2+1}$, and $q^{d+1}>(C_d+1)q^{d/2+1}$.
+\end{proof}
+
 \begin{remark}
 Proposition~\ref{prop:katz} needs no lower bound on $q$ for the estimate itself, but its threshold
 is larger than that of Corollary~\ref{cor:threshold} for every $d$ (Table~\ref{tab:thresholds}).
-Both rigorous thresholds have the shape $d^{O(d)}$, like the unproved v5 value $(8d)^{2d+6}$.
-Corollary~\ref{cor:threshold} is smaller than the v5 value for every $d\le 52$; since
-$\log q_0(d)\sim\frac{13}{3}\log(d-1)!$ while $\log(8d)^{2d+6}\sim2d\log d$, the order reverses
-for large $d$. A sharper Betti-number bound for $W$ would improve both.
+Both have the shape $d^{O(d)}$, like the unproved v5 value $(8d)^{2d+6}$.
+Proposition~\ref{prop:sawin} is of a different quality: its error term saves $q^{d/2}$ rather than
+$q^{1/2}$, and its threshold is polynomial in $d$. It is the best of the three for every $d\ge5$.
+For $d=4$, Corollary~\ref{cor:threshold} gives $q>1.65\times10^4$ against $q>7.8\times10^5$.
+Sawin's bound uses an explicit study of the singularities of $V$; this is exactly the sharper
+Betti-number input that our cruder estimates lack.
 \end{remark}
 
 % =====================================================================
@@ -683,6 +740,16 @@ Known results on prescribed coefficients \cite{Pollack2013,Ha2016} allow roughly
 prescribed coefficients in degree $n$ for large $q$, and a small positive proportion for every $q$.
 Half of the coefficients is out of reach of current methods, so we make no claim there.
 
+The difficulty can be located precisely. Reversing polynomials, $t\mapsto t^{2d}g(1/t)$, turns
+$\cI_f$ into a residue class modulo $t^{d}$ among polynomials of degree $2d$. The modulus has
+norm $q^d=X^{1/2}$ with $X=q^{2d}$, so the Legendre interval sits exactly at level of distribution $1/2$.
+The Riemann hypothesis for the Dirichlet $L$-functions modulo $t^d$ is a theorem, but at this level it
+gives an error larger than the main term by a factor of order $d$. This mirrors the integers, where the
+Riemann hypothesis gives primes in intervals of length about $\sqrt x\log x$ but not $2\sqrt x$.
+Sawin and Shusterman \cite{SawinShusterman2022} go beyond level $1/2$ for fixed $q$ (large compared
+with $p$), but only for squarefree moduli. The moduli $t^d$ needed here are not covered.
+Neither are they covered by \eqref{eq:sawin}, whose constant grows like $(2d+2)^{3d}$.
+
 \paragraph{Small characteristic.}
 For $p\le2d$ the proofs of Propositions~\ref{prop:primitive} and~\ref{prop:transposition}
 do not apply as written. By \cite{BBR2015} the asymptotic still holds for odd $p$.
@@ -691,8 +758,10 @@ Theorem~D(ii) covers $p=3$, $d=2$. The data of Table~\ref{tab:exhaustive} show n
 \paragraph{Open problems.}
 \begin{enumerate}[label=(\arabic*),nosep]
 \item Prove $\Nirr(f)\ge1$ for all $q$ when $d\ge4$, closing the gap between the
-      computations (small $q$) and Corollary~\ref{cor:threshold} (large $q$).
-\item Find an explicit threshold of the form $q>C^{d\log d}$ or better, using Betti-number bounds for $W$.
+      computations (small $q$) and the thresholds of Section~\ref{sec:explicit} (large $q$).
+      For $d=4$ this means $19<q\le1.65\times10^4$.
+\item Reduce the constant in \eqref{eq:sawin} enough to make the threshold in
+      Proposition~\ref{prop:sawin} a small power of $d$, or remove it.
 \item Shorter intervals: find the least $e$ such that $\{f^2+s:\deg s\le e\}$ contains an
       irreducible for all large $q$. By \cite{BBR2015} the answer is $1$ or $2$ for large $q$,
       so the real question is uniformity in $q$ and $d$.
@@ -829,6 +898,16 @@ Amer.\ Math.\ Soc., 1995, 385--401.
 P.~Pollack,
 Irreducible polynomials with several prescribed coefficients,
 \textit{Finite Fields Appl.}\ \textbf{22} (2013), 70--78.
+
+\bibitem{Sawin2021}
+W.~Sawin,
+Square-root cancellation for sums of factorization functions over short intervals in function fields,
+\textit{Duke Math.\ J.}\ \textbf{170} (2021), 997--1026. arXiv:1809.05137.
+
+\bibitem{SawinShusterman2022}
+W.~Sawin, M.~Shusterman,
+On the Chowla and twin primes conjectures over $\mathbb F_q[T]$,
+\textit{Ann.\ of Math.}\ \textbf{196} (2022), no.~2. arXiv:1808.04001.
 
 \bibitem{Turnwald1995}
 G.~Turnwald,
